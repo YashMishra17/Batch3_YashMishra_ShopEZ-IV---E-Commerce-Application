@@ -1,0 +1,6 @@
+@ShopEZ.Gateway_HostAddress = http://localhost:5143
+
+GET {{ShopEZ.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
