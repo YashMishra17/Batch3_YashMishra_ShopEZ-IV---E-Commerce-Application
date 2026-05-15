@@ -1,0 +1,6 @@
+@ShopEZ.PaymentService_HostAddress = http://localhost:5036
+
+GET {{ShopEZ.PaymentService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
