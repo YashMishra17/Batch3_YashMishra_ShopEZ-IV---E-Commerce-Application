@@ -1,0 +1,184 @@
+services:
+
+  sql-schema-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: shopez-sql-schema-init
+    volumes:
+      - ./ShopEZ.ProductService/Data/SqlSchema.sql:/SqlSchema.sql:ro
+    entrypoint: ["/bin/bash", "-c", "echo 'Waiting...' && i=1 && while [ $i -le 20 ]; do /opt/mssql-tools18/bin/sqlcmd -S host.docker.internal,1433 -U sa -P '6624Shreeram@5' -Q 'SELECT 1' -No && break; echo \"Attempt $i failed\"; sleep 5; i=$((i+1)); done && /opt/mssql-tools18/bin/sqlcmd -S host.docker.internal,1433 -U sa -P '6624Shreeram@5' -i /SqlSchema.sql -No && echo 'Schema applied.'"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: "no"
+
+  user-service:
+    build:
+      context: .
+      dockerfile: src/Services/UserService/ShopEZ.UserService/Dockerfile
+    image: shopez/user-service:latest
+    container_name: shopez-user-service
+    ports:
+      - "5001:5001"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5001
+      ConnectionStrings__UserDb: "Server=host.docker.internal,1435;Database=ShopEZ_UserDb;User Id=sa;Password=6624Shreeram@5;MultipleActiveResultSets=True;TrustServerCertificate=True;Connection Timeout=30;"
+      JwtSettings__SecretKey: "ShopEZ@SuperSecret#Key!2025$$Secure&Long@Enough32Chars"
+      JwtSettings__Issuer: "ShopEZ.API"
+      JwtSettings__Audience: "ShopEZ.Client"
+      JwtSettings__ExpiryHours: "24"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - shopez-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5001/health || exit 1"]
+      interval: 20s
+      timeout: 8s
+      retries: 6
+      start_period: 45s
+    restart: unless-stopped
+
+  product-service:
+    build:
+      context: .
+      dockerfile: ShopEZ.ProductService/Dockerfile
+    image: shopez/product-service:latest
+    container_name: shopez-product-service
+    ports:
+      - "5002:5002"
+    depends_on:
+      sql-schema-init:
+        condition: service_completed_successfully
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5002
+      ConnectionStrings__ProductDb: "Server=host.docker.internal,1435;Database=ShopEZ_ProductDb;User Id=sa;Password=6624Shreeram@5;MultipleActiveResultSets=True;TrustServerCertificate=True;Connection Timeout=30;"
+      JwtSettings__SecretKey: "ShopEZ@SuperSecret#Key!2025$$Secure&Long@Enough32Chars"
+      JwtSettings__Issuer: "ShopEZ.API"
+      JwtSettings__Audience: "ShopEZ.Client"
+      JwtSettings__ExpiryHours: "24"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - shopez-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5002/health || exit 1"]
+      interval: 20s
+      timeout: 8s
+      retries: 6
+      start_period: 45s
+    restart: unless-stopped
+
+  cart-service:
+    build:
+      context: .
+      dockerfile: src/Services/CartService/ShopEZ.CartService/Dockerfile
+    image: shopez/cart-service:latest
+    container_name: shopez-cart-service
+    ports:
+      - "5003:5003"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5003
+      JwtSettings__SecretKey: "ShopEZ@SuperSecret#Key!2025$$Secure&Long@Enough32Chars"
+      JwtSettings__Issuer: "ShopEZ.API"
+      JwtSettings__Audience: "ShopEZ.Client"
+      JwtSettings__ExpiryHours: "24"
+    networks:
+      - shopez-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5003/health || exit 1"]
+      interval: 20s
+      timeout: 8s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  order-service:
+    build:
+      context: .
+      dockerfile: src/Services/OrderService/ShopEZ.OrderService/Dockerfile
+    image: shopez/order-service:latest
+    container_name: shopez-order-service
+    ports:
+      - "5004:5004"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5004
+      ConnectionStrings__OrderDb: "Server=host.docker.internal,1435;Database=ShopEZ_OrderDb;User Id=sa;Password=6624Shreeram@5;MultipleActiveResultSets=True;TrustServerCertificate=True;Connection Timeout=30;"
+      JwtSettings__SecretKey: "ShopEZ@SuperSecret#Key!2025$$Secure&Long@Enough32Chars"
+      JwtSettings__Issuer: "ShopEZ.API"
+      JwtSettings__Audience: "ShopEZ.Client"
+      JwtSettings__ExpiryHours: "24"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - shopez-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5004/health || exit 1"]
+      interval: 20s
+      timeout: 8s
+      retries: 6
+      start_period: 45s
+    restart: unless-stopped
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: src/Services/PaymentService/ShopEZ.PaymentService/Dockerfile
+    image: shopez/payment-service:latest
+    container_name: shopez-payment-service
+    ports:
+      - "5005:5005"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5005
+      ConnectionStrings__PaymentDb: "Server=host.docker.internal,1435;Database=ShopEZ_PaymentDb;User Id=sa;Password=6624Shreeram@5;MultipleActiveResultSets=True;TrustServerCertificate=True;Connection Timeout=30;"
+      JwtSettings__SecretKey: "ShopEZ@SuperSecret#Key!2025$$Secure&Long@Enough32Chars"
+      JwtSettings__Issuer: "ShopEZ.API"
+      JwtSettings__Audience: "ShopEZ.Client"
+      JwtSettings__ExpiryHours: "24"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - shopez-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5005/health || exit 1"]
+      interval: 20s
+      timeout: 8s
+      retries: 6
+      start_period: 45s
+    restart: unless-stopped
+
+  gateway:
+    build:
+      context: .
+      dockerfile: src/Gateway/ShopEZ.Gateway/Dockerfile
+    image: shopez/gateway:latest
+    container_name: shopez-gateway
+    ports:
+      - "5000:5000"
+    depends_on:
+      user-service:
+        condition: service_healthy
+      product-service:
+        condition: service_healthy
+      cart-service:
+        condition: service_healthy
+      order-service:
+        condition: service_healthy
+      payment-service:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5000
+    networks:
+      - shopez-network
+    restart: unless-stopped
+
+networks:
+  shopez-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

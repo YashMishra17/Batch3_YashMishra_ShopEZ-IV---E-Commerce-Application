@@ -1,0 +1,37 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "src\\Services\\UserService\\ShopEZ.UserService\\ShopEZ.UserService.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "ShopEZ.ProductService\\ShopEZ.ProductService.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "src\\Services\\CartService\\ShopEZ.CartService\\ShopEZ.CartService.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "src\\Services\\OrderService\\ShopEZ.OrderService\\ShopEZ.OrderService.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "src\\Services\\PaymentService\\ShopEZ.PaymentService\\ShopEZ.PaymentService.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "src\\Gateway\\ShopEZ.Gateway\\ShopEZ.Gateway.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]

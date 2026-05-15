@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Gateway/">
+    <Project Path="src/Gateway/ShopEZ.Gateway/ShopEZ.Gateway.csproj" Id="9cb054dd-a6c5-4e08-9eb7-228116bfb635" />
+  </Folder>
+  <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/CartService/">
+    <Project Path="src/Services/CartService/ShopEZ.CartService/ShopEZ.CartService.csproj" Id="97859a61-0fd8-41ad-9379-5fa5ecf4f048" />
+  </Folder>
+  <Folder Name="/src/Services/OrderService/">
+    <Project Path="src/Services/OrderService/ShopEZ.OrderService/ShopEZ.OrderService.csproj" Id="a651bc8b-22ce-4d81-93c4-2b3b56c57241" />
+  </Folder>
+  <Folder Name="/src/Services/PaymentService/">
+    <Project Path="src/Services/PaymentService/ShopEZ.PaymentService/ShopEZ.PaymentService.csproj" Id="1c87b5f2-37a5-4cd8-b319-4188ebbcb11f" />
+  </Folder>
+  <Folder Name="/src/Services/ProductService/">
+    <Project Path="ShopEZ.ProductService/ShopEZ.ProductService.csproj" Id="d11fcc15-f208-4891-b501-5939a6e83053" />
+  </Folder>
+  <Folder Name="/src/Services/UserService/">
+    <Project Path="src/Services/UserService/ShopEZ.UserService/ShopEZ.UserService.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ShopEZ.CartService.Tests/ShopEZ.CartService.Tests.csproj" Id="df10c2b4-e0fc-4596-9bf5-a718497e66ef" />
+    <Project Path="tests/ShopEZ.OrderService.Tests/ShopEZ.OrderService.Tests.csproj" Id="113985cf-9e97-4d39-a050-94924b645634" />
+    <Project Path="tests/ShopEZ.PaymentService.Tests/ShopEZ.PaymentService.Tests.csproj" Id="415f71fa-57a7-4e10-ac0d-455870d81a61" />
+    <Project Path="tests/ShopEZ.ProductService.Tests/ShopEZ.ProductService.Tests.csproj" Id="79aa7afb-2647-481b-8b29-6cf79b624497" />
+    <Project Path="tests/ShopEZ.UserService.Tests/ShopEZ.UserService.Tests.csproj" Id="e0a897ea-9f45-4799-8c17-081eff875554" />
+  </Folder>
+</Solution>
